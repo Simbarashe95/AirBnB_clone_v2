@@ -2,10 +2,11 @@
 """Defines the City class."""
 from models.base_model import Base
 from models.base_model import BaseModel
-from sqlalchemy import Column
+from sqlalchemy import Column, Integer
 from sqlalchemy import ForeignKey
 from sqlalchemy import String
 from sqlalchemy.orm import relationship
+from models.place import Place
 
 
 class City(BaseModel, Base):

@@ -73,7 +73,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] is '{' and pline[-1] is'}'\
+                    if pline[0] is '{' and pline[-1] is '}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -118,13 +118,29 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+ 		args_list = args.split()
+	    class_name = arg_list[0]
+		if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
+
+        new_instance = HBNBCommand.classes[class_name]()
+        
+	    for arg in arg_list[1:]:
+		 	param = arg.split('=')
+			key = param[0]
+			val = param[1]
+
+			if val[0] == '\"':
+				val = val.replace('\"', '').replace('_', ' ')
+			elif '.' in val:
+				val = float(val)
+			else:
+				val = int(val)
+			setattr(new_instance, key, val)
+		new_instance.save()
         print(new_instance.id)
-        storage.save()
+        
 
     def help_create(self):
         """ Help information for the create method """
@@ -309,6 +325,7 @@ class HBNBCommand(cmd.Cmd):
                 # type cast as necessary
                 if att_name in HBNBCommand.types:
                     att_val = HBNBCommand.types[att_name](att_val)
+
 
                 # update dictionary with name, value pair
                 new_dict.__dict__.update({att_name: att_val})

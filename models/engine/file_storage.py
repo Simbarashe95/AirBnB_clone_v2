@@ -10,6 +10,15 @@ class FileStorage:
 
     def all(self):
         """Returns a dictionary of models currently in storage"""
+        if cls:
+            if type(cls) == str:
+                cls = eval(cls)
+            my_dict = {}
+            for key, value in self.__objects.items():
+                if type(value) == cls:
+                    my_dict[key] = value
+            return my_dict
+        return self.__objects
         return FileStorage.__objects
 
     def new(self, obj):
@@ -48,3 +57,15 @@ class FileStorage:
                     self.all()[key] = classes[val['__class__']](**val)
         except FileNotFoundError:
             pass
+
+    def delete(self, obj=None):
+        """Deltes and object from _objects"""
+        if (obj):
+            key = "{}.{}". format(type(obj)._name_, obj.id)
+            del self._objects[key]
+
+    def close(self):
+		"""Calls reload methid for deserializing 
+        the JSON file to objects
+        """
+        self.reload()
